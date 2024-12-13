@@ -1,0 +1,39 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "cwd": "${workspaceRoot}",
+            "name": "Debug (OpenOCD)",
+            "preLaunchTask": "cargo build",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "openocd",
+            "gdbTarget": ":3333",
+            "runToEntryPoint": "Launch",
+            "executable": "",
+            "device": "STM32F303VCT6",
+            "postLaunchCommands": [
+                "monitor rtt server start 8765 0",
+                // should span the *right* part of RAM
+                "monitor rtt setup 0x20000038 0x30 \"SEGGER RTT\"",
+                "monitor rtt start",
+            ],
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32f3x.cfg"
+            ],
+            "svdFile": "${workspaceRoot}/.vscode/STM32F303.svd",
+        },
+        {
+            "cwd": "${workspaceRoot}",
+            "name": "Attach Debug",
+            "request": "attach",
+            "type": "cortex-debug",
+            "servertype": "external",
+            "gdbTarget": ":3333",
+            "executable": "",
+            "gdbPath": "arm-none-eabi-gdb", // or gdb or multiarch-gdb
+        }
+
+    ]
+}
